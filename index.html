@@ -1,0 +1,144 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#342d29">
+  <title>ふるぎやさんの値段交渉 | ウィーバー高石</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+
+<main class="game">
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-small">WEAVER TAKAISHI</span>
+      <strong>ふるぎやさんの値段交渉</strong>
+    </div>
+
+    <div class="stats">
+      <div>
+        <small>売上</small>
+        <strong id="sales">0円</strong>
+      </div>
+      <div>
+        <small>接客</small>
+        <strong id="progress">0 / 5</strong>
+      </div>
+    </div>
+  </header>
+
+  <section class="shop">
+    <canvas
+      id="scene"
+      width="400"
+      height="240"
+      aria-label="ドット絵の古着屋。お客さんが来店して値段交渉をします。"
+    ></canvas>
+
+    <div class="scene-caption">
+      <span id="shopStatus">開店準備中</span>
+      <span>WEAVER VINTAGE SHOP</span>
+    </div>
+  </section>
+
+  <section class="interface">
+    <div id="startPanel" class="panel">
+      <span class="eyebrow">WELCOME TO OUR SHOP</span>
+      <h1>今日からあなたも<br>古着屋スタッフ！</h1>
+      <p>
+        お客さんの希望価格で売る？<br>
+        それとも「もう一声！」で交渉する？
+      </p>
+      <p class="help">
+        5人のお客さんを接客して、<br>
+        できるだけ高い売上を目指そう！
+      </p>
+      <button id="startButton" class="btn primary">
+        おみせをOPEN！
+      </button>
+    </div>
+
+    <div id="playPanel" class="panel hidden">
+      <div class="customer-heading">
+        <span id="customerName">お客さん</span>
+        <span id="customerCount">1人目</span>
+      </div>
+
+      <div class="speech" aria-live="polite">
+        <p id="dialogue">いらっしゃいませ！</p>
+      </div>
+
+      <div class="product-card">
+        <div class="product-icon" id="productIcon">👕</div>
+        <div class="product-info">
+          <small>今回の商品</small>
+          <strong id="productName">Tシャツ</strong>
+          <span>参考価格：<b id="basePrice">1,000円</b></span>
+        </div>
+        <div class="offer">
+          <small>希望価格</small>
+          <strong id="offerPrice">800円</strong>
+        </div>
+      </div>
+
+      <div id="actions" class="actions">
+        <button id="sellButton" class="btn sell">
+          この値段で売る
+        </button>
+        <button id="negotiateButton" class="btn negotiate">
+          もう一声！
+        </button>
+      </div>
+
+      <button id="nextButton" class="btn primary hidden">
+        次のお客さんへ →
+      </button>
+
+      <p id="message" class="message" aria-live="polite"></p>
+    </div>
+
+    <div id="resultPanel" class="panel hidden">
+      <span class="eyebrow">CLOSED</span>
+      <h2>本日の営業終了！</h2>
+      <p id="resultComment"></p>
+
+      <div class="results">
+        <div>
+          <small>本日の売上</small>
+          <strong id="finalSales">0円</strong>
+        </div>
+        <div>
+          <small>販売成立</small>
+          <strong id="finalSold">0件</strong>
+        </div>
+        <div>
+          <small>交渉成功</small>
+          <strong id="finalSuccess">0回</strong>
+        </div>
+      </div>
+
+      <button id="retryButton" class="btn primary">
+        もう一度遊ぶ
+      </button>
+
+      <div class="promotion">
+        <strong>ウィーバー高石</strong>
+        <p>
+          就労継続支援B型事業所<br>
+          古着に関わる作業にも取り組んでいます。
+        </p>
+        <small>※ゲーム内の価格・取引は架空のものです。</small>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    WEAVER TAKAISHI · MINI GAME PROTOTYPE
+  </footer>
+</main>
+
+</body>
+</html>
