@@ -29,6 +29,17 @@ const GameRanking=(()=>{
    if([...normalized].length<1||[...normalized].length>10)throw new Error('ニックネームは1〜10文字で入力してください。');
    if(!/^[ぁ-んァ-ヶー一-龯々〆ヵヶa-zA-Z0-9・_ ]+$/u.test(normalized))throw new Error('ニックネームは日本語・英数字で入力してください。');
    if(/(?:https?|www|@|電話|住所)/i.test(normalized))throw new Error('個人情報やURLを含む名前は使えません。');
+   // 入力直後の案内。禁止語の最終判定はSupabase側で行う。
+   const compact=normalized.normalize('NFKC').toLowerCase().replace(/[\s\u3000_・･-]/g,'');
+   const blockedTerms=[
+     '死ね','しね','シネ','殺す','ころす','コロス','ぶっ殺','ブッ殺','消えろ','きえろ',
+     '脅迫','お前を殺','レイプ','れいぷ','強姦','セックス','せっくす',
+     'ちんこ','ちんぽ','まんこ','まんぽ','fuck','fucking','nigger',
+     'クソ野郎','くそやろう','バカ死ね','ばかしね'
+   ];
+   if(blockedTerms.some(word=>compact.includes(word.normalize('NFKC').toLowerCase().replace(/[\s\u3000_・･-]/g,'')))){
+     throw new Error('そのニックネームは使えません。別の名前にしてください。');
+   }
    if(!Number.isSafeInteger(score)||score<0||score>150000)throw new Error('売上記録を登録できません。');
    return normalized;
  };
