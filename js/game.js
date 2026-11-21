@@ -10,6 +10,28 @@ const sprite=(pose)=>{const face=['idle','thinking','happy','worried','thanks'].
 ['idle','thinking','happy','worried','thanks'].forEach(p=>{const im=new Image();im.src=`assets/clerk_overlay_${p}.png`;});
 const customerImage=(pose)=>`assets/customers/c${String(state.customer.id).padStart(2,'0')}/${pose}.png`;
 function stopCustomerMotion(){if(state.customerAnim!==null){clearInterval(state.customerAnim);state.customerAnim=null}}
+// お客さんの画像は事前読み込みしてから表示し、切り替え時の前のお客さんの残像を防ぐ。
+const customerImageCache=new Map();
+function loadCustomerImage(url){
+  if(customerImageCache.has(url))return customerImageCache.get(url);
+  const promise=new Promise(resolve=>{
+    const img=new Image();
+    img.onload=()=>resolve(true);
+    img.onerror=()=>resolve(false);
+    img.src=url;
+    if(img.complete)resolve(img.naturalWidth>0);
+  });
+  customerImageCache.set(url,promise);
+  return promise;
+}
+async function prepareCustomer(id){
+  const dir=`assets/customers/c${String(id).padStart(2,'0')}/`;
+  const poses=['idle','thinking','happy','disappointed','walk_1','walk_2','walk_3','walk_4'];
+  // first frame must be loaded; remaining frames are cached for smooth walking
+  const first=await loadCustomerImage(dir+'walk_1.png');
+  poses.forEach(p=>loadCustomerImage(dir+p+'.png'));
+  return first;
+}
 function customerPose(pose){if(state.customer)el.customer.src=customerImage(pose)}
 function walkCustomer(){stopCustomerMotion();let frame=0;customerPose('walk_1');if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;state.customerAnim=setInterval(()=>{frame=(frame+1)%4;customerPose(`walk_${frame+1}`)},150)}
 function showBubble(message){el.bubble.textContent=message}
@@ -31,17 +53,30 @@ function failChance(){let n=FAIL_RATES[Math.min(state.tries-1,5)];const c=state.
 async function animateEnter(){
   const s=state;
   s.phase='enter';render();
+  // 次のお客さんの画像が読み込まれるまで、前のお客さんは絶対に見せない。
+  const token=s.runId;
+  const customerId=s.customer.id;
+  stopCustomerMotion();
+  el.customer.style.visibility='hidden';
+  el.customer.style.opacity='0';
   el.customer.className='sprite customer';
-  el.customer.style.opacity='1';
-  el.customer.style.transform=''; // 前のお客さんのインライン位置を持ち越さない
+  el.customer.style.transform='';
   el.product.classList.remove('handoff','placing','sold-transfer','failed-item');
   el.product.src=`assets/items/${s.item.id}.png`;
   el.product.style.opacity='0';
-  customerPose('idle');sprite('idle');
+  sprite('idle');
   showBubble(`${s.customer.name}が来店しました！`);
+  const ready=await prepareCustomer(customerId);
+  if(token!==s.runId || s.customer?.id!==customerId)return;
+  // 読み込みに失敗した場合も前のお客さんの画像は表示しない
+  if(!ready){showBubble('画像を読み込めませんでした。再読み込みしてください。');return;}
+  customerPose('walk_1');
+  el.customer.style.visibility='visible';
+  el.customer.style.opacity='1';
   void el.customer.offsetWidth;
   el.customer.classList.add('entering');walkCustomer();GameAudio.effect('door');
   await delay(1500);
+  if(token!==s.runId || s.customer?.id!==customerId)return;
   stopCustomerMotion();customerPose('idle');
   el.customer.classList.remove('entering');
   el.customer.style.transform='translateX(0)';
@@ -56,6 +91,7 @@ async function animateEnter(){
   el.product.classList.add('handoff');
   GameAudio.effect('pickup');
   await delay(600);
+  if(token!==s.runId || s.customer?.id!==customerId)return;
   el.customer.classList.remove('handing');
   el.product.classList.remove('handoff');
   el.product.style.opacity='1';

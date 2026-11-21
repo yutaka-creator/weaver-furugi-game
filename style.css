@@ -195,3 +195,23 @@
   .weaver-ad h3 { font-size: 26px; }
   .weaver-site-button { font-size: 15px; }
 }
+
+/* v12: タイトル画面の注意書き */
+.game-disclaimer {
+  margin: 11px 0 14px;
+  padding: 11px 12px;
+  background: #fff5df;
+  color: #59402b;
+  border: 2px solid #b99265;
+  border-radius: 9px;
+  font-size: 12px;
+  line-height: 1.55;
+  text-align: left;
+}
+.game-disclaimer strong { display: block; font-size: 13px; margin-bottom: 4px; }
+.game-disclaimer span { display: block; }
+#intro .modal { max-height: calc(100dvh - 32px); overflow-y: auto; }
+@media (max-height: 620px) {
+ #intro .modal { padding: 10px 14px; }
+ .game-disclaimer { margin: 7px 0; padding: 8px 9px; font-size: 11px; }
+}
