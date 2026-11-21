@@ -1,144 +1,47 @@
-
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#342d29">
-  <title>ふるぎやさんの値段交渉 | ウィーバー高石</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="script.js" defer></script>
-</head>
-<body>
-
-<main class="game">
-  <header class="topbar">
-    <div class="brand">
-      <span class="brand-small">WEAVER TAKAISHI</span>
-      <strong>ふるぎやさんの値段交渉</strong>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#543628"><title>ふるぎやさんの値段交渉 Ver.0.6</title><link rel="stylesheet" href="style.css?v=adintegrated11"></head>
+<body><main class="game" id="game"><header class="top"><span class="brand">🧥 古着屋ゲーム<small>Ver.0.6</small></span><span id="turn">接客 1/5</span><span id="total">売上 0円</span><button class="sound" id="sound" type="button" aria-label="サウンドをオフにする" aria-pressed="true">🔊</button></header>
+<section class="scene" id="scene" aria-label="古着屋店内"><div class="shop-art" aria-hidden="true"><img class="shop" id="shopBase" src="assets/shop_base.png" alt="古着屋の店内" draggable="false"><img class="clerk-overlay" id="clerk" src="assets/clerk_overlay_idle.png" alt="店員" draggable="false"><img class="product" id="product" src="assets/items/tshirt.png" alt="商品"><img class="sprite customer" id="customer" src="assets/customers/c00/idle.png" alt="お客さん"></div><div class="bubble" id="bubble" aria-live="polite"></div><div class="sparkle" id="sparkle" aria-hidden="true">✨ レア！ ✨</div></section>
+<section class="controls" id="controls"><div class="item-line"><strong id="item">Tシャツ</strong><span>基準価格 <strong id="base">800円</strong></span></div><div class="price-line"><div>現在価格 <strong id="offer">0円</strong></div><div>交渉 <strong id="tries">0回</strong></div></div><p id="hint" class="hint"></p><div class="actions"><button id="sell" type="button">売る</button><button id="bargain" type="button">もう一声！</button></div><p id="tapNotice" class="tap-notice" hidden>画面をタップして次へ ▶</p></section>
+<section class="overlay" id="intro"><div class="modal"><h1>🧥 ふるぎやさんの<br>値段交渉</h1><p class="sub">16bit風・古着屋ゲーム Ver.0.6</p><p>5人のお客さんと値段交渉！<br>「売る」で確実に販売。<br>「もう一声！」で価格アップに挑戦！</p><p class="small">交渉に失敗すると、そのお客さんの売上は0円。高い売上を目指そう！</p><button id="start" class="primary" type="button">ゲームスタート ▶</button><button id="rankingFromIntro" class="ranking-entry" type="button">🏆 売上ランキングを見る</button></div></section>
+<section class="overlay" id="result" hidden>
+  <div class="modal result-modal" role="dialog" aria-modal="true" aria-labelledby="resultHeading">
+    <div class="result-summary">
+      <h2 id="resultHeading">🏆 本日の営業終了！</h2>
+      <div class="result-score"><span class="result-label">総売上</span><strong class="result-total" id="resultTotal">0円</strong><span class="title" id="resultTitle">新人店員</span></div>
+      <div class="stats"><span>販売成立 <b id="resultSales">0件</b></span><span>交渉成功 <b id="resultWins">0回</b></span></div>
     </div>
+    <section class="weaver-ad" aria-labelledby="weaverTitle">
+      <div class="weaver-ad-kicker">このゲームでご紹介している事業所</div>
+      <h3 id="weaverTitle">ウィーバー高石</h3>
+      <img class="weaver-ad-photo" src="assets/promo/weaver_takaishi_ad.png" alt="手をつなぐ写真と『あなたらしく働く第一歩を。無理なく、一歩ずつ。就労継続支援B型ウィーバー高石』のメッセージ" loading="eager" draggable="false" width="1600" height="1600">
+      <a class="weaver-site-button" href="https://socialweavers.jp/" target="_blank" rel="noopener noreferrer" aria-label="ウィーバー高石の公式ホームページを新しいタブで開く">🏠 公式ホームページを見る <span aria-hidden="true">↗</span></a>
+    </section>
+    <section class="ranking-result" aria-label="ランキング登録">
+      <h3>🏆 売上ランキングに挑戦！</h3>
+      <p id="rankingResultStatus" aria-live="polite">記録を確認しています…</p>
+      <form id="rankingRegisterForm" hidden>
+        <label for="rankingNickname">ニックネーム（最大10文字）</label>
+        <input id="rankingNickname" name="nickname" maxlength="10" autocomplete="nickname" placeholder="例：たこさん" required>
+        <p class="nickname-note">本名・電話番号・メールアドレスは入力しないでね。</p>
+        <button type="submit" class="ranking-register-button" id="rankingRegisterButton">ランキングに登録する</button>
+      </form>
+      <button id="rankingFromResult" class="ranking-entry" type="button">🏆 TOP10と自分の順位を見る</button>
+    </section>
+    <button id="restart" class="primary replay-button" type="button">🔄 もう一度遊ぶ ▶</button>
+  </div>
+</section>
+<section class="overlay" id="rankingOverlay" hidden>
+  <div class="modal ranking-modal" role="dialog" aria-modal="true" aria-labelledby="rankingTitle">
+    <h2 id="rankingTitle">🏆 売上ランキング TOP10</h2>
+    <p id="rankingMode" class="ranking-mode"></p>
+    <p id="rankingLoading" class="ranking-loading" aria-live="polite">読み込み中…</p>
+    <ol id="rankingList" class="ranking-list" aria-label="上位10人のランキング"></ol>
+    <div class="ranking-mine" id="rankingMine">あなたの順位：未登録</div>
+    <p class="ranking-note">同じ売上なら先に達成した人が上位。ニックネームと最高売上のみ公開。</p>
+    <button class="ranking-close" id="rankingClose" type="button">← ゲームに戻る</button>
+  </div>
+</section>
 
-    <div class="stats">
-      <div>
-        <small>売上</small>
-        <strong id="sales">0円</strong>
-      </div>
-      <div>
-        <small>接客</small>
-        <strong id="progress">0 / 5</strong>
-      </div>
-    </div>
-  </header>
-
-  <section class="shop">
-    <canvas
-      id="scene"
-      width="400"
-      height="240"
-      aria-label="ドット絵の古着屋。お客さんが来店して値段交渉をします。"
-    ></canvas>
-
-    <div class="scene-caption">
-      <span id="shopStatus">開店準備中</span>
-      <span>WEAVER VINTAGE SHOP</span>
-    </div>
-  </section>
-
-  <section class="interface">
-    <div id="startPanel" class="panel">
-      <span class="eyebrow">WELCOME TO OUR SHOP</span>
-      <h1>今日からあなたも<br>古着屋スタッフ！</h1>
-      <p>
-        お客さんの希望価格で売る？<br>
-        それとも「もう一声！」で交渉する？
-      </p>
-      <p class="help">
-        5人のお客さんを接客して、<br>
-        できるだけ高い売上を目指そう！
-      </p>
-      <button id="startButton" class="btn primary">
-        おみせをOPEN！
-      </button>
-    </div>
-
-    <div id="playPanel" class="panel hidden">
-      <div class="customer-heading">
-        <span id="customerName">お客さん</span>
-        <span id="customerCount">1人目</span>
-      </div>
-
-      <div class="speech" aria-live="polite">
-        <p id="dialogue">いらっしゃいませ！</p>
-      </div>
-
-      <div class="product-card">
-        <div class="product-icon" id="productIcon">👕</div>
-        <div class="product-info">
-          <small>今回の商品</small>
-          <strong id="productName">Tシャツ</strong>
-          <span>参考価格：<b id="basePrice">1,000円</b></span>
-        </div>
-        <div class="offer">
-          <small>希望価格</small>
-          <strong id="offerPrice">800円</strong>
-        </div>
-      </div>
-
-      <div id="actions" class="actions">
-        <button id="sellButton" class="btn sell">
-          この値段で売る
-        </button>
-        <button id="negotiateButton" class="btn negotiate">
-          もう一声！
-        </button>
-      </div>
-
-      <button id="nextButton" class="btn primary hidden">
-        次のお客さんへ →
-      </button>
-
-      <p id="message" class="message" aria-live="polite"></p>
-    </div>
-
-    <div id="resultPanel" class="panel hidden">
-      <span class="eyebrow">CLOSED</span>
-      <h2>本日の営業終了！</h2>
-      <p id="resultComment"></p>
-
-      <div class="results">
-        <div>
-          <small>本日の売上</small>
-          <strong id="finalSales">0円</strong>
-        </div>
-        <div>
-          <small>販売成立</small>
-          <strong id="finalSold">0件</strong>
-        </div>
-        <div>
-          <small>交渉成功</small>
-          <strong id="finalSuccess">0回</strong>
-        </div>
-      </div>
-
-      <button id="retryButton" class="btn primary">
-        もう一度遊ぶ
-      </button>
-
-      <div class="promotion">
-        <strong>ウィーバー高石</strong>
-        <p>
-          就労継続支援B型事業所<br>
-          古着に関わる作業にも取り組んでいます。
-        </p>
-        <small>※ゲーム内の価格・取引は架空のものです。</small>
-      </div>
-    </div>
-  </section>
-
-  <footer>
-    WEAVER TAKAISHI · MINI GAME PROTOTYPE
-  </footer>
 </main>
-
-</body>
-</html>
+<script src="js/ranking-config.js?v=adintegrated11"></script>
+<script src="js/data.js?v=adintegrated11" defer></script><script src="js/audio.js?v=adintegrated11" defer></script><script src="js/ranking.js?v=adintegrated11" defer></script><script src="js/ranking-ui.js?v=adintegrated11" defer></script><script src="js/game.js?v=adintegrated11" defer></script></body></html>
