@@ -1,8 +1,19 @@
-古着屋ゲーム Ver.0.6 固定店員・顔差分版
+古着屋ゲーム ランキング安全対策 Ver.0.7.1 (差分セット)
 
-index.html をブラウザで開くと起動します。
-背景: assets/shop_fixed.png（店員を描き込んだ固定画像）
-表情差分: assets/faces/（顔の範囲のみ透明で切り抜いた重ね画像）
-通常・考える・笑顔・困る・ありがとう の5状態。
-ゲーム本体は以前の試作版のルールを維持。全国ランキングは未実装です。
-背景が動かない方式に変更していますが、表情差分の境界は端末で確認してください。
+1) Supabase SQL Editor の New query で supabase_sexual_terms_v071.sql を全文実行。
+   前提: v14 の禁止語チェックSQLが適用済み。
+   既存ランキング記録は削除されません。
+2) GitHub Desktopのゲームフォルダで js/ranking.js を同名ファイルに上書き。
+3) index.html を同名ファイルに上書き（キャッシュ更新のための読み込みURLを変更済み）。
+   注意: これは前回の Ver.0.7 パッチの index.html に基づきます。
+   Ver.0.7をすでに公開した後に別のHTML変更をした場合は、
+   index.html の ranking.js?v= の値だけ ranking071 に変更しても構いません。
+4) Commit to main → Push origin。
+5) 新しい未登録のブラウザ等で、通常名/NG名を確認。
+
+既に登録した不適切名は自動削除されません。
+本機能は完全な内容モデレーションではありません。管理者による見直しも必要です。
+
+参照リスト: LDNOOBW, CC BY 4.0 (必要な語を選定・変更)
+https://github.com/LDNOOBW/List-of-Dirty-Naughty-Obscene-and-Otherwise-Bad-Words
+https://creativecommons.org/licenses/by/4.0/

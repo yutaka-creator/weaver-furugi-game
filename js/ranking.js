@@ -35,7 +35,8 @@ const GameRanking=(()=>{
      '死ね','しね','シネ','殺す','ころす','コロス','ぶっ殺','ブッ殺','消えろ','きえろ',
      '脅迫','お前を殺','レイプ','れいぷ','強姦','セックス','せっくす',
      'ちんこ','ちんぽ','まんこ','まんぽ','fuck','fucking','nigger',
-     'クソ野郎','くそやろう','バカ死ね','ばかしね'
+     'クソ野郎','くそやろう','バカ死ね','ばかしね','オナニー','フェラチオ','ポルノ','児童性虐待','ニガー','ビッチ','殺人方法','ゴックン',
+     'おっぱい','オッパイ','おつぱい','乳首','ちくび','チクビ','巨乳','陰毛','アナル','あなる','ペニス','ぺにす','オナニー','おなにー','マスターベーション','まんこ','マンコ','ちんこ','チンコ','ちんぽ','チンポ','フェラ','ふぇら','フェラチオ','クンニ','くんに','セックス','せっくす','性交','性行為','射精','しゃせい','中出し','なかだし','潮吹き','しおふき','精液','せいえき','勃起','ぼっき','ポルノ','ぽるの','レイプ','れいぷ','強姦','輪姦','乱交','パイパン','ぱいぱん','ディルド','性器','せいき','porn','hentai','xxx','blowjob','handjob','dildo','pussy','dick','fuck','fucking','rape','boobs','tits'
    ];
    if(blockedTerms.some(word=>compact.includes(word.normalize('NFKC').toLowerCase().replace(/[\s\u3000_・･-]/g,'')))){
      throw new Error('そのニックネームは使えません。別の名前にしてください。');
@@ -89,5 +90,14 @@ const GameRanking=(()=>{
    if(mineResult.error)throw mineResult.error;
    return {top:topResult.data||[],mine:mineResult.data?.[0]||null};
  }
- return {init,getProfile,submit,list,online};
+ async function deleteMyRecord(){
+   await init();
+   if(!online){
+     const id=pickId();persistData(parseData().filter(row=>row.id!==id));
+     localStorage.removeItem(nameKey);return;
+   }
+   const {error}=await client.rpc('weaver_delete_my_score');
+   if(error)throw error;
+ }
+ return {init,getProfile,submit,list,deleteMyRecord,online};
 })();
